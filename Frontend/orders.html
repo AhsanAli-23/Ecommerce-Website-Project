@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Orders</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f3f4f6;
+    padding:40px;
+}
+
+h1{
+    margin-bottom:30px;
+}
+
+.orders-container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.order-card{
+    background:#fff;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    margin-bottom:25px;
+    transition:0.3s;
+}
+
+.order-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 35px rgba(0,0,0,0.12);
+}
+
+.order-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+    align-items:center;
+}
+
+.order-id{
+    font-weight:bold;
+}
+
+.order-status{
+    background:#facc15;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.order-date{
+    font-size:13px;
+    color:#6b7280;
+    margin-bottom:15px;
+}
+
+.order-items{
+    border-top:1px solid #eee;
+    padding-top:15px;
+}
+
+.item{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.total{
+    border-top:1px solid #ddd;
+    margin-top:15px;
+    padding-top:15px;
+    font-weight:bold;
+    text-align:right;
+    font-size:16px;
+    color:#3b82f6;
+}
+
+.empty{
+    text-align:center;
+    padding:50px;
+    background:#fff;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>My Orders</h1>
+
+<div class="orders-container" id="ordersContainer"></div>
+
+<script>
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+let container = document.getElementById("ordersContainer");
+
+if(orders.length === 0){
+    container.innerHTML = `
+        <div class="empty">
+            <h2>No Orders Yet 🛒</h2>
+            <p>Start shopping and your orders will appear here.</p>
+        </div>
+    `;
+} else {
+
+    orders.reverse().forEach(order => {
+
+        let itemsHTML = "";
+        let total = 0;
+
+        order.items.forEach(item => {
+            total += item.price * item.quantity;
+
+            itemsHTML += `
+                <div class="item">
+                    <span>${item.name} x ${item.quantity}</span>
+                    <span>Rs. ${item.price * item.quantity}</span>
+                </div>
+            `;
+        });
+
+        container.innerHTML += `
+            <div class="order-card">
+
+                <div class="order-header">
+                    <div class="order-id">Order #${order.id}</div>
+                    <div class="order-status">Pending</div>
+                </div>
+
+                <div class="order-date">
+                    Date: ${order.date}
+                </div>
+
+                <div class="order-items">
+                    ${itemsHTML}
+                </div>
+
+                <div class="total">
+                    Total: Rs. ${total}
+                </div>
+
+            </div>
+        `;
+    });
+}
+
+</script>
+
+</body>
+</html>

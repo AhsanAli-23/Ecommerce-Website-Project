@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Cart</title>
+<style>
+body{
+    font-family: Arial;
+    background:#f5f5f5;
+    padding:40px;
+}
+.cart-item{
+    background:#fff;
+    padding:20px;
+    margin-bottom:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.cart-item img{
+    width:80px;
+}
+.total{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:20px;
+}
+button{
+    padding:8px 12px;
+    cursor:pointer;
+}
+.remove{
+    background:red;
+    color:white;
+    border:none;
+}
+.checkout{
+    background:black;
+    color:white;
+    padding:12px 20px;
+    border:none;
+    margin-top:20px;
+}
+</style>
+</head>
+<body>
+
+<h1>My Cart</h1>
+<div id="cartContainer"></div>
+<div class="total" id="totalPrice"></div>
+<button class="checkout" onclick="goToCheckout()">Proceed to Checkout</button>
+
+<script>
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let container = document.getElementById("cartContainer");
+let total = 0;
+
+function renderCart(){
+    container.innerHTML = "";
+    total = 0;
+
+    cart.forEach((item,index) => {
+
+        total += item.price * item.quantity;
+
+        container.innerHTML += `
+            <div class="cart-item">
+                <div>
+                    <img src="${item.image}">
+                    <h3>${item.name}</h3>
+                    <p>Rs. ${item.price}</p>
+                    <p>Qty: ${item.quantity}</p>
+                </div>
+                <button class="remove" onclick="removeItem(${index})">Remove</button>
+            </div>
+        `;
+    });
+
+    document.getElementById("totalPrice").innerText = "Total: Rs. " + total;
+}
+
+function removeItem(index){
+    cart.splice(index,1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+}
+
+function goToCheckout(){
+    window.location.href = "checkout.html";
+}
+
+renderCart();
+
+</script>
+
+</body>
+</html>

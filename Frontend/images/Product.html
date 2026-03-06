@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Product Details</title>
+<style>
+body{
+    font-family:Arial;
+    background:#f5f7fa;
+    padding:40px;
+}
+
+.container{
+    display:flex;
+    gap:40px;
+    background:#fff;
+    padding:30px;
+    border-radius:8px;
+}
+
+img{
+    width:350px;
+}
+
+.price{
+    font-size:22px;
+    color:#2563eb;
+    margin:15px 0;
+}
+
+button{
+    padding:12px 20px;
+    margin-right:10px;
+    border:none;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.add{ background:#3b82f6; color:white; }
+.buy{ background:#ff8c42; color:white; }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div>
+        <img id="productImage">
+    </div>
+
+    <div>
+        <h2 id="productTitle"></h2>
+        <div class="price" id="productPrice"></div>
+        <p id="productDesc"></p>
+
+        <button class="add">Add to Cart</button>
+        <button class="buy" onclick="location.href='checkout.html'">
+            Buy Now
+        </button>
+    </div>
+</div>
+
+<script>
+
+// 🟢 Products database
+const products = {
+    1: {
+        title: "T-shirt for Men",
+        price: "$10.30",
+        image: "shirt.jfif",
+        desc: "High quality cotton t-shirt for daily wear."
+    },
+    2: {
+        title: "Blue Jeans",
+        price: "$25.00",
+        image: "jeanz.jfif",
+        desc: "Stylish blue jeans comfortable fit."
+    },
+    3: {
+        title: "Winter Coat",
+        price: "$60.00",
+        image: "coat.jfif",
+        desc: "Warm winter coat for cold weather."
+    }
+};
+
+// 🟢 Get ID from URL
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+// 🟢 Load correct product
+if(products[id]){
+    document.getElementById("productTitle").innerText = products[id].title;
+    document.getElementById("productPrice").innerText = products[id].price;
+    document.getElementById("productImage").src = products[id].image;
+    document.getElementById("productDesc").innerText = products[id].desc;
+}
+
+</script>
+
+</body>
+</html>

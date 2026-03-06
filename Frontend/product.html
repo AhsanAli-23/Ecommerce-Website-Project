@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Product Details</title>
+<style>
+
+body{
+    font-family: Arial;
+    background:#c3e7fd;
+    margin:0;
+    padding:40px;
+}
+
+.product-container{
+    display:flex;
+    gap:40px;
+    background:#fff;
+    padding:30px;
+    border-radius:10px;
+}
+
+.product-images{
+    flex:1;
+}
+
+.product-images img{
+    width:50%;
+    border-radius:10px;
+}
+
+.product-details{
+    flex:1;
+}
+
+.product-details h1{
+    margin-bottom:10px;
+}
+
+.price{
+    font-size:24px;
+    font-weight:bold;
+    margin:15px 0;
+}
+
+.qty{
+    margin:15px 0;
+}
+
+.qty input{
+    width:60px;
+    padding:5px;
+}
+
+.btn{
+    padding:12px 20px;
+    border:none;
+    cursor:pointer;
+    margin-right:10px;
+    border-radius: 5px;
+}
+
+.add{
+    background:black;
+    color:white;
+}
+
+.buy{
+    background:#1699c1;
+    color:white;
+}
+
+.description{
+    margin-top:30px;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="product-container">
+
+    <div class="product-images">
+        <img id="productImage">
+    </div>
+
+    <div class="product-details">
+        <h1 id="productName"></h1>
+        <div class="price" id="productPrice"></div>
+
+        <div class="qty">
+            Quantity:
+            <input type="number" value="1" min="1">
+        </div>
+
+       <button class="btn add" id="addToCartBtn">Add to Cart</button>
+       <button class="btn buy" id="buyNowBtn">Buy Now</button>
+    </div>
+
+</div>
+
+<div class="description">
+    <h2>Description</h2>
+    <p id="productDesc"></p>
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+let currentProduct = null;
+
+fetch(`http://localhost:5000/api/products/${id}`)
+.then(res => res.json())
+.then(data => {
+
+    currentProduct = data;
+
+    document.getElementById("productName").innerText = data.name;
+    document.getElementById("productPrice").innerText = "Rs. " + data.price;
+    document.getElementById("productDesc").innerText = data.description;
+    document.getElementById("productImage").src = data.image;
+});
+
+
+// ADD TO CART (SMART VERSION)
+document.getElementById("addToCartBtn").addEventListener("click", () => {
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const quantity = parseInt(document.querySelector(".qty input").value);
+
+    const existingProduct = cart.find(item => item._id === currentProduct._id);
+
+    if(existingProduct){
+        existingProduct.quantity += quantity;
+    } else {
+        cart.push({
+            ...currentProduct,
+            quantity: quantity
+        });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Product Added To Cart!");
+
+});
+
+
+// BUY NOW
+document.getElementById("buyNowBtn").addEventListener("click", () => {
+
+    const quantity = parseInt(document.querySelector(".qty input").value);
+
+    localStorage.setItem("buyNowItem", JSON.stringify({
+        ...currentProduct,
+        quantity: quantity
+    }));
+
+    window.location.href = "checkout.html";
+
+});
+
+</script>
+
+</body>
+</html>
